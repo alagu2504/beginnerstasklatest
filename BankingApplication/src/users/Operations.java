@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
 import bankingapplication.BankingApplicationStorage;
 import bankingapplication.StorageLayerInterface;
 import bankingapplicationPojos.Account;
+import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
+import bankingapplicationPojos.CustomerStatusRequest;
 import bankingapplicationPojos.Statement;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
@@ -22,13 +24,13 @@ public class Operations {
 	StorageLayerInterface storageLayerObject=new BankingApplicationStorage();
 	Logger logger=Logger.getLogger(Operations.class.getName());
 	
-	public boolean loginMethod(long accountNumber,String password) throws ClassNotFoundException, SQLException, CustomException {
+	public boolean loginMethod(int userId,String password) throws ClassNotFoundException, SQLException, CustomException {
 		CustomCheck.isNull(password);
 
 		Map<Integer,User>allUsersDetails = storageLayerObject.getUserDetails();
-		User userPojoObject=allUsersDetails.get(storageLayerObject.getCustomerId(accountNumber));
+		User userPojoObject=allUsersDetails.get(userId);
 		if(userPojoObject==null) {
-			throw new CustomException("Given Account Number is doesn't Match!");
+			throw new CustomException("Given User Id is doesn't Match!");
 		}
 		if(!password.equals(userPojoObject.getPassword())) {
 			logger.info("Given  password is incorrect!");
@@ -49,8 +51,11 @@ public class Operations {
         statementObject.setTransferAmount(depositeAmount);
         statementObject.setTime(System.currentTimeMillis());
         statementObject.setCustomerId(accountPojoObject.getCustomerId());
+        statementObject.setModeOfTransaction("Deposite");
         statementObject.setTransactionType("Debit");
 		storageLayerObject.updateTransactionStatement(statementObject);
+		logger.info("Successfully Deposited");
+
 	}
 	
 	
@@ -68,8 +73,9 @@ public class Operations {
 	}//end of withdraw Method
 	
 	
-public void executeTransaction(TransactionRequest requestPojoObject) {
-	
+public void executeTransaction(TransactionRequest requestPojoObject) throws CustomException {
+	CustomCheck.isNull(requestPojoObject);
+
 	Account accountPojo=getAccountDetails(requestPojoObject.getSenderAccountNumber());
 		long Balance=accountPojo.getBalance();
 		Balance=Balance-requestPojoObject.getTransferAmount();
@@ -82,6 +88,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 		statementObject.setTransferAmount(requestPojoObject.getTransferAmount());
 		statementObject.setTime(System.currentTimeMillis());
 		statementObject.setCustomerId(accountPojo.getCustomerId());
+		statementObject.setModeOfTransaction("Withdraw");
 		statementObject.setTransactionType("Credit");
 		
 		
@@ -122,6 +129,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 		long time=System.currentTimeMillis();
 		senderStatementObject.setTime(time);
 		senderStatementObject.setTransactionType("Debit");
+		senderStatementObject.setModeOfTransaction("Transfer");
 		
 		Statement receiverStatementObject=new Statement();
 		receiverStatementObject.setCustomerId(receiverCustomerObject.getCustomerId());
@@ -130,6 +138,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 		receiverStatementObject.setTransferAmount(transferAmount);
 		receiverStatementObject.setTime(time);
 		receiverStatementObject.setTransactionType("Credit");
+		receiverStatementObject.setModeOfTransaction("Transfer");
 		
 		
 		storageLayerObject.updateTransactionStatement(senderStatementObject);
@@ -146,6 +155,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 	
 	
 	public String changePassword(long currentAccount,long accountNumber,String newPassword) throws CustomException {
+		CustomCheck.isNull(newPassword);
 
 		Pattern passwordPattern=Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%&]).{8,32}$");
 		   Matcher matcherObject = passwordPattern.matcher(newPassword);
@@ -163,8 +173,9 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 	}//end of changePassword
 	
 	
-	public boolean switchAccount(long currentAccountNumber,long switchAccountNumber,String password) {
-		
+	public boolean switchAccount(long currentAccountNumber,long switchAccountNumber,String password) throws CustomException {
+		CustomCheck.isNull(password);
+
 		Map<Integer,User>allUsersDetails = storageLayerObject.getUserDetails();
 		User userDetails=allUsersDetails.get(storageLayerObject.getCustomerId(switchAccountNumber));
 		
@@ -193,10 +204,10 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 	}//end of getAccountDetails
 	
 	
-	public User getUserDetails(long accountNumber) {
+	public User getUserDetails(int userId) {
 
 		Map<Integer,User>allUsersDetails = storageLayerObject.getUserDetails();
-		User UserDetails=allUsersDetails.get(storageLayerObject.getCustomerId(accountNumber));
+		User UserDetails=allUsersDetails.get(userId);
 		return UserDetails;
 	}
 	
@@ -216,42 +227,49 @@ public void executeTransaction(TransactionRequest requestPojoObject) {
 	}
 	
 	
-	public boolean getAccountStatus(long accountNumber) {
+	public String getAccountStatus(long accountNumber) {
 
-		Account accountPojoObject=getAccountDetails(accountNumber);
-		String status=accountPojoObject.getStatus();
-		String state="Active";
-		if(!state.equalsIgnoreCase(status)) {
-			return false;
-		}
-		return true;
+		Account account=getAccountDetails(accountNumber);
+		return account.getStatus();
 	}//end of getStatus
 	
 	
-	public boolean getCustomerStatus(long accountNumber) {
+	public String getCustomerStatus(int customerId) {
 
 		Map<Integer,Customer> allCustomerDetails=storageLayerObject.getCustomerDetails();
-		Customer customerPojoObject=allCustomerDetails.get(storageLayerObject.getCustomerId(accountNumber));
-		String status="Active";
-		String state=customerPojoObject.getStatus();
-		if(!status.equalsIgnoreCase(state)) {
-			return false;
-		}
-		return true;
-		
+		Customer customer=allCustomerDetails.get(customerId);
+		return customer.getStatus();		
 	}
 	
-	
-	public String getRole(long accountNumber) {
+	public String getRole(int userId) {
 
 		Map<Integer,User>allUsersDetails = storageLayerObject.getUserDetails();
-		User currentUserDetails=allUsersDetails.get(storageLayerObject.getCustomerId(accountNumber));
+		User currentUserDetails=allUsersDetails.get(userId);
 		return currentUserDetails.getRole();
 		
 	}
 	
 	public void changeInfo(Customer customer) throws CustomException {
 		storageLayerObject.changeInfo(customer);
+	}
+	
+	public void customerStatusRequest(long accountNumber,String description) throws CustomException {
+		CustomCheck.isNull(description);
+
+		CustomerStatusRequest request=new CustomerStatusRequest();
+		request.setCustomerId(storageLayerObject.getCustomerId(accountNumber));
+		request.setDescription(description);
+		request.setStatus("Waiting");
+		storageLayerObject.customerStatusRequest(request);
+	}
+	
+	public void accountStatusRequest(long accountNumber,String description) throws CustomException {
+		CustomCheck.isNull(description);
+		AccountStatusRequest request=new AccountStatusRequest();
+		request.setAccountNumber(accountNumber);
+		request.setDescription(description);
+		request.setStatus("Waiting");
+		storageLayerObject.accountStatusRequest(request);
 	}
 	
 }

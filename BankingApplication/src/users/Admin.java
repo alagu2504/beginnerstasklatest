@@ -1,13 +1,17 @@
 package users;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import bankingapplicationPojos.Account;
+import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
+import bankingapplicationPojos.CustomerStatusRequest;
 import bankingapplicationPojos.Statement;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
+import customexceptionpackage.CustomException;
 
 public class Admin extends Operations {
 	
@@ -46,19 +50,16 @@ public class Admin extends Operations {
     	storageLayerObject.insertAccountDetails(accountPojo);
     }
     
-    public void changeAccountStatus(int userId,String status) {
-    	storageLayerObject.changeAccountStatus(userId,status);
-    }
     
-    public void changeCustomerStatus(int customerId,String status) {
-    	storageLayerObject.changeCustomerStatus(customerId,status);
+    public Map<Integer,CustomerStatusRequest> getAllCustomerStatusRequest(){
+    	return storageLayerObject.getAllCustomerStatusRequest();
     }
     
     public Map<Integer,TransactionRequest> getAllRequestStatements(){
     	return storageLayerObject.getAllTransactionRequest();
     }
     
-    public void updateTransactionRequest(TransactionRequest requestPojoObject,boolean accept) {
+    public void updateTransactionRequest(TransactionRequest requestPojoObject,boolean accept) throws CustomException {
     	String requestStatus;
     	if(accept) {
     		requestStatus="Accepted";
@@ -70,6 +71,29 @@ public class Admin extends Operations {
     	storageLayerObject.updateTransactionRequest(requestPojoObject, requestStatus);
     }
     
+	public void updateCustomerStatus(int customerId,boolean status,String customerStatus) {
+		String requestStatus;
+    	if(status) {
+    		requestStatus="Accepted";
+    	}
+    	else {
+    		requestStatus="Rejected";
+    	}
+		storageLayerObject.updateCustomerStatus(customerId, requestStatus, customerStatus);
+	}
 	
+	public List<AccountStatusRequest> getAllAccountStatusRequest(){
+		return storageLayerObject.getAllAccountStatusRequest();
+	}	
+	public void updateAccountStatus(Account account,boolean status,String accountStatus) {
+		String requestStatus;
+    	if(status) {
+    		requestStatus="Accepted";
+    	}
+    	else {
+    		requestStatus="Rejected";
+    	}
+    	storageLayerObject.updateAccountStatus(account, accountStatus, requestStatus);
+	}
 
 }

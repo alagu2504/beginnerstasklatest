@@ -14,7 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import bankingapplicationPojos.Account;
+import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
+import bankingapplicationPojos.CustomerStatusRequest;
 import bankingapplicationPojos.Statement;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
@@ -34,17 +36,17 @@ public class BankingApplicationStorage implements StorageLayerInterface {
 	        return connection;
 			}//end of getConnection
 	
-	public void insertAccountDetails(Account accountPojoObject) {
+	public void insertAccountDetails(Account account) {
 		String query="INSERT INTO account_info(ACCOUNT_NUMBER,ACCOUNT_TYPE,IFSC_CODE,"
 				+ "BRANCH_NAME,BALANCE,STATUS,CUSTOMER_ID) VALUES(?,?,?,?,?,?,?)";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
-			statement.setLong(1, accountPojoObject.getAccountNumber());
-			statement.setString(2, accountPojoObject.getAccountType());
-			statement.setString(3, accountPojoObject.getIfscCode());
-			statement.setString(4, accountPojoObject.getBranchName());
-			statement.setLong(5, accountPojoObject.getBalance());
-			statement.setString(6, accountPojoObject.getStatus());
-			statement.setInt(7, accountPojoObject.getCustomerId());
+			statement.setLong(1, account.getAccountNumber());
+			statement.setString(2, account.getAccountType());
+			statement.setString(3, account.getIfscCode());
+			statement.setString(4, account.getBranchName());
+			statement.setLong(5, account.getBalance());
+			statement.setString(6, account.getStatus());
+			statement.setInt(7, account.getCustomerId());
 			statement.executeUpdate();
 		}
 		catch (ClassNotFoundException | SQLException e) {
@@ -85,15 +87,15 @@ public class BankingApplicationStorage implements StorageLayerInterface {
 			statement.setInt(1, customerId);
 			ResultSet resultSet=statement.executeQuery();
 			while(resultSet.next()) {
-				Account accountPojoObject=new Account();
-				accountPojoObject.setAccountNumber(resultSet.getLong("ACCOUNT_NUMBER"));
-				accountPojoObject.setAccountType(resultSet.getString("ACCOUNT_TYPE"));
-				accountPojoObject.setIfscCode(resultSet.getString("IFSC_CODE"));
-				accountPojoObject.setBranchName(resultSet.getString("BRANCH_NAME"));
-				accountPojoObject.setBalance(resultSet.getLong("BALANCE"));
-				accountPojoObject.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
-				accountPojoObject.setStatus(resultSet.getString("STATUS"));
-				mapOfAccount.put(resultSet.getLong("ACCOUNT_NUMBER"), accountPojoObject);
+				Account account=new Account();
+				account.setAccountNumber(resultSet.getLong("ACCOUNT_NUMBER"));
+				account.setAccountType(resultSet.getString("ACCOUNT_TYPE"));
+				account.setIfscCode(resultSet.getString("IFSC_CODE"));
+				account.setBranchName(resultSet.getString("BRANCH_NAME"));
+				account.setBalance(resultSet.getLong("BALANCE"));
+				account.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
+				account.setStatus(resultSet.getString("STATUS"));
+				mapOfAccount.put(resultSet.getLong("ACCOUNT_NUMBER"), account);
 			}
 			}
 		catch (ClassNotFoundException | SQLException e) {
@@ -125,16 +127,16 @@ return mapOfAllAccount;
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 			try(ResultSet resultSet=statement.executeQuery()){
 				while(resultSet.next()) {
-					User userPojoObject=new User();
-					userPojoObject.setUserId(resultSet.getInt("USER_ID"));
-					userPojoObject.setUserName(resultSet.getString("USER_NAME"));
-					userPojoObject.setDataOfBirth(resultSet.getString("DATE_OF_BIRTH"));
-					userPojoObject.setMobileNumber(resultSet.getLong("MOBILE"));
-					userPojoObject.setAddress(resultSet.getString("ADDRESS"));
-					userPojoObject.setEmailId(resultSet.getString("EMAIL_ID"));
-					userPojoObject.setPassword(resultSet.getString("PASSWORD"));
-					userPojoObject.setRole(resultSet.getString("ROLE"));
-					mapOfAllUser.put(resultSet.getInt("USER_ID"), userPojoObject);
+					User user=new User();
+					user.setUserId(resultSet.getInt("USER_ID"));
+					user.setUserName(resultSet.getString("USER_NAME"));
+					user.setDataOfBirth(resultSet.getString("DATE_OF_BIRTH"));
+					user.setMobileNumber(resultSet.getLong("MOBILE"));
+					user.setAddress(resultSet.getString("ADDRESS"));
+					user.setEmailId(resultSet.getString("EMAIL_ID"));
+					user.setPassword(resultSet.getString("PASSWORD"));
+					user.setRole(resultSet.getString("ROLE"));
+					mapOfAllUser.put(resultSet.getInt("USER_ID"), user);
 				}
 			}
 		}
@@ -144,16 +146,16 @@ return mapOfAllAccount;
 		return mapOfAllUser;
 	}
 	
-	public void insertUsersDetails(User userPojoObject) {
+	public void insertUsersDetails(User user) {
 		String query="INSERT INTO user_info(USER_NAME,DATE_OF_BIRTH,MOBILE,ADDRESS,EMAIL_ID,PASSWORD,ROLE) VALUES(?,?,?,?,?,?,?)";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
-			statement.setString(1,userPojoObject.getUserName());
-			statement.setString(2, userPojoObject.getDataOfBirth());
-			statement.setLong(3, userPojoObject.getMobileNumber());
-			statement.setString(4, userPojoObject.getAddress());
-			statement.setString(5, userPojoObject.getEmailId());
-			statement.setString(6, userPojoObject.getPassword());
-			statement.setString(7, userPojoObject.getRole());
+			statement.setString(1,user.getUserName());
+			statement.setString(2, user.getDataOfBirth());
+			statement.setLong(3, user.getMobileNumber());
+			statement.setString(4, user.getAddress());
+			statement.setString(5, user.getEmailId());
+			statement.setString(6, user.getPassword());
+			statement.setString(7, user.getRole());
 			statement.executeUpdate();
 		}
 		catch (ClassNotFoundException | SQLException e) {
@@ -162,13 +164,13 @@ return mapOfAllAccount;
     	logger.info("Successfully Inserted");
 	}
 	
-	public void insertCustomerDetails(Customer customerPojoObject) {
+	public void insertCustomerDetails(Customer customer) {
 		String query="INSERT INTO customer_info(CUSTOMER_ID,AADHAAR_NUMBER,PAN_NUMBER,STATUS) VALUES (?,?,?,?)";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
-			statement.setInt(1, customerPojoObject.getCustomerId());
-			statement.setLong(2, customerPojoObject.getAadhaarNumber());
-			statement.setString(3, customerPojoObject.getPanNumber());
-			statement.setString(4, customerPojoObject.getStatus());
+			statement.setInt(1, customer.getCustomerId());
+			statement.setLong(2, customer.getAadhaarNumber());
+			statement.setString(3, customer.getPanNumber());
+			statement.setString(4, customer.getStatus());
 			statement.executeUpdate();
 		}
 		catch (ClassNotFoundException | SQLException e) {
@@ -187,21 +189,21 @@ return mapOfAllAccount;
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 			try(ResultSet resultSet=statement.executeQuery()){
 				while(resultSet.next()) {
-					Customer customerObject=new Customer();
-					customerObject.setUserId(resultSet.getInt("USER_ID"));
-					customerObject.setUserName(resultSet.getString("USER_NAME"));
-					customerObject.setDataOfBirth(resultSet.getString("DATE_OF_BIRTH"));
-					customerObject.setMobileNumber(resultSet.getLong("MOBILE"));
-					customerObject.setAddress(resultSet.getString("ADDRESS"));
-					customerObject.setEmailId(resultSet.getString("EMAIL_ID"));
-					customerObject.setPassword(resultSet.getString("PASSWORD"));
-					customerObject.setRole(resultSet.getString("ROLE"));
-					customerObject.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
-					customerObject.setAadhaarNumber(resultSet.getLong("AADHAAR_NUMBER"));
-					customerObject.setPanNumber(resultSet.getString("PAN_NUMBER"));
-					customerObject.setUserId(resultSet.getInt("USER_ID"));
-					customerObject.setStatus(resultSet.getString("STATUS"));
-					mapOfCustomer.put(resultSet.getInt("USER_ID"), customerObject);
+					Customer customer=new Customer();
+					customer.setUserId(resultSet.getInt("USER_ID"));
+					customer.setUserName(resultSet.getString("USER_NAME"));
+					customer.setDataOfBirth(resultSet.getString("DATE_OF_BIRTH"));
+					customer.setMobileNumber(resultSet.getLong("MOBILE"));
+					customer.setAddress(resultSet.getString("ADDRESS"));
+					customer.setEmailId(resultSet.getString("EMAIL_ID"));
+					customer.setPassword(resultSet.getString("PASSWORD"));
+					customer.setRole(resultSet.getString("ROLE"));
+					customer.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
+					customer.setAadhaarNumber(resultSet.getLong("AADHAAR_NUMBER"));
+					customer.setPanNumber(resultSet.getString("PAN_NUMBER"));
+					customer.setUserId(resultSet.getInt("USER_ID"));
+					customer.setStatus(resultSet.getString("STATUS"));
+					mapOfCustomer.put(resultSet.getInt("USER_ID"), customer);
 				}
 			}
 		}
@@ -216,15 +218,16 @@ return mapOfAllAccount;
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
            try(ResultSet resultSet=statement.executeQuery()){
         	   while(resultSet.next()) {
-               	Statement statementObject=new Statement();
-               	statementObject.setTransactionId(resultSet.getInt("TRANSACTION_ID"));
-               	statementObject.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
-               	statementObject.setSenderAccount(resultSet.getLong("SENDER_ACCOUNT_NUMBER"));
-               	statementObject.setReceiverAccount(resultSet.getLong("RECEIVER_ACCOUNT_NUMBER"));
-               	statementObject.setTransferAmount(resultSet.getLong("TRANSFER_AMOUNT"));
-               	statementObject.setTransactionType(resultSet.getString("TRANSACTION_TYPE"));
-               	statementObject.setTime(resultSet.getLong("TRANSACTION_TIME"));
-               	statements.add(statementObject);
+               	Statement transactionStatement=new Statement();
+               	transactionStatement.setTransactionId(resultSet.getInt("TRANSACTION_ID"));
+               	transactionStatement.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
+               	transactionStatement.setSenderAccount(resultSet.getLong("SENDER_ACCOUNT_NUMBER"));
+               	transactionStatement.setReceiverAccount(resultSet.getLong("RECEIVER_ACCOUNT_NUMBER"));
+               	transactionStatement.setTransferAmount(resultSet.getLong("TRANSFER_AMOUNT"));
+               	transactionStatement.setTransactionType(resultSet.getString("TRANSACTION_TYPE"));
+               	transactionStatement.setTime(resultSet.getLong("TRANSACTION_TIME"));
+               	transactionStatement.setModeOfTransaction(resultSet.getString("MODE_OF_TRANSACTION"));
+               	statements.add(transactionStatement);
                }
            }
 			
@@ -237,19 +240,19 @@ return mapOfAllAccount;
 	
 	public Map<Long,Map<Integer,Statement>> getAllTransactionStatements(){
 		
-		Map<Long,Map<Integer,Statement>> allTransactionStatements=new HashMap<>();
+		Map<Long,Map<Integer,Statement>> transactionStatements=new HashMap<>();
 		String query="SELECT ACCOUNT_NUMBER,CUSTOMER_ID FROM account_info";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 			ResultSet resultSet=statement.executeQuery();
 			while(resultSet.next()) {
-				allTransactionStatements.put(resultSet.getLong("ACCOUNT_NUMBER"),getAllStatements(resultSet.getInt("CUSTOMER_ID"),resultSet.getLong("ACCOUNT_NUMBER")));
+				transactionStatements.put(resultSet.getLong("ACCOUNT_NUMBER"),getAllStatements(resultSet.getInt("CUSTOMER_ID"),resultSet.getLong("ACCOUNT_NUMBER")));
 			}
 		}
 		
 		catch (ClassNotFoundException | SQLException e) {
  			e.printStackTrace();
  		}
-		return allTransactionStatements;
+		return transactionStatements;
 	}//end of getAllTransactionStatements
 
 	public void statementOperation(String query,Map<Integer,Statement> mapOfStatements){
@@ -265,6 +268,7 @@ return mapOfAllAccount;
 	               	statementObject.setTransferAmount(resultSet.getLong("TRANSFER_AMOUNT"));
 	               	statementObject.setTransactionType(resultSet.getString("TRANSACTION_TYPE"));
 	               	statementObject.setTime(resultSet.getLong("TRANSACTION_TIME"));
+	               	statementObject.setModeOfTransaction(resultSet.getString("MODE_OF_TRANSACTION"));
 	               	mapOfStatements.put(resultSet.getInt("TRANSACTION_ID"), statementObject);
 	               }
 	           }
@@ -343,16 +347,17 @@ return mapOfAllAccount;
 	}//end of transactionMethod
 	
 	
-	public void updateTransactionStatement(Statement StatementObject) {
+	public void updateTransactionStatement(Statement statementObject) {
 		String query="INSERT INTO transaction_statements(CUSTOMER_ID,SENDER_ACCOUNT_NUMBER,"
-				+ "RECEIVER_ACCOUNT_NUMBER,TRANSFER_AMOUNT,TRANSACTION_TIME,TRANSACTION_TYPE) VALUES(?,?,?,?,?,?)";
+				+ "RECEIVER_ACCOUNT_NUMBER,TRANSFER_AMOUNT,TRANSACTION_TIME,TRANSACTION_TYPE,MODE_OF_TRANSACTION) VALUES(?,?,?,?,?,?,?)";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
-			statement.setInt(1, StatementObject.getCustomerId());
-			statement.setLong(2, StatementObject.getSenderAccount());
-			statement.setLong(3, StatementObject.getReceiverAccount());
-			statement.setLong(4, StatementObject.getTransferAmount());
-			statement.setLong(5, StatementObject.getTime().getTime());
-			statement.setString(6, StatementObject.getTransactionType());
+			statement.setInt(1, statementObject.getCustomerId());
+			statement.setLong(2, statementObject.getSenderAccount());
+			statement.setLong(3, statementObject.getReceiverAccount());
+			statement.setLong(4, statementObject.getTransferAmount());
+			statement.setLong(5, statementObject.getTime().getTime());
+			statement.setString(6, statementObject.getTransactionType());
+			statement.setString(7, statementObject.getModeOfTransaction());
 			statement.executeUpdate();
 		}
 		 catch (ClassNotFoundException | SQLException e) {
@@ -360,15 +365,9 @@ return mapOfAllAccount;
 	 		}
 	}//end of updateTransactionStatement
 	
-	public void changeAccountStatus(int customerId,String status) {    ///
-		String query="UPDATE account_info SET STATUS= '"+status+"' WHERE CUSTOMER_ID = "+customerId;
-		changeStatus(query);
-	}//end of delete user
+
 	
-	public void changeCustomerStatus(int customerId,String status) {    ///
-		String query="UPDATE customer_info SET STATUS= '"+status+"' WHERE CUSTOMER_ID = "+customerId;
-		changeStatus(query);
-	}//end of changeCustomerStatus
+	
 	
 	
 	public int getCustomerId(long accountNumber) {
@@ -458,5 +457,89 @@ return mapOfAllAccount;
 			changeStatus(query);
 		}
 	}//end of changeCustomer
+	
+	public void updateCustomerStatus(int customerId,String requestStatus,String customerStatus) {    ///
+		String query="UPDATE customer_info SET STATUS= '"+customerStatus+"' WHERE CUSTOMER_ID = "+customerId;
+		changeStatus(query);
+		String query1="UPDATE customer_status_request SET STATUS= '"+requestStatus+"' WHERE CUSTOMER_ID = "+customerId;
+		changeStatus(query1);
+	}//end of changeCustomerStatus
+	
+	public void customerStatusRequest(CustomerStatusRequest request) {
+		String query="INSERT INTO customer_status_request(CUSTOMER_ID,DESCRIPTION,STATUS)VALUES(?,?,?)";
+		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
+			statement.setInt(1, request.getCustomerId());
+			statement.setString(2, request.getdescription());
+			statement.setString(3,request.getStatus());
+			statement.executeUpdate();
+		}
+		 catch (ClassNotFoundException | SQLException e) {
+	 			e.printStackTrace();
+	 		}
+	}//end of customerStatusRequest
+	
+	public Map<Integer,CustomerStatusRequest> getAllCustomerStatusRequest(){
+		Map<Integer,CustomerStatusRequest> customerRequestMap=new HashMap<>();
+		String query="SELECT * FROM customer_status_request WHERE STATUS='Waiting'";
+		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
+	           try(ResultSet resultSet=statement.executeQuery()){
+	        	   while(resultSet.next()) {
+	        		   CustomerStatusRequest request=new CustomerStatusRequest();
+	        		   request.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
+	        		   request.setDescription(resultSet.getString("DESCRIPTION"));
+	        		   request.setStatus(resultSet.getString("STATUS"));
+	        		   customerRequestMap.put(resultSet.getInt("CUSTOMER_ID"), request);
+	        	   }
+	           }
+		}
+		catch (ClassNotFoundException | SQLException e) {
+ 			e.printStackTrace();
+ 		}
+		return customerRequestMap;
+		}//end of getAllTransactionRequest
+	
+	
+	public void accountStatusRequest(AccountStatusRequest request) {
+		String query="INSERT INTO account_status_request(ACCOUNT_NUMBER,DESCRIPTION,REQUEST_STATUS)VALUES(?,?,?)";
+		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
+			statement.setLong(1,request.getAccountNumber() );
+			statement.setString(2, request.getdescription());
+			statement.setString(3, request.getStatus());
+			statement.executeUpdate();
+
+		}
+		 catch (ClassNotFoundException | SQLException e) {
+	 			e.printStackTrace();
+	 		}
+	}//end of accountStatusRequest
+	
+	public List<AccountStatusRequest> getAllAccountStatusRequest(){
+		
+		List<AccountStatusRequest> accountStatusRequest=new ArrayList<>();
+		String query="SELECT * FROM account_status_request WHERE REQUEST_STATUS = 'Waiting'";
+		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
+			ResultSet resultSet=statement.executeQuery();
+			while(resultSet.next()) {
+				AccountStatusRequest request=new AccountStatusRequest();
+				request.setAccountNumber(resultSet.getLong("ACCOUNT_NUMBER"));
+				request.setDescription(resultSet.getString("DESCRIPTION"));
+				request.setStatus(resultSet.getString("REQUEST_STATUS"));
+				accountStatusRequest.add(request);
+			}
+		}
+		catch (ClassNotFoundException | SQLException e) {
+ 			e.printStackTrace();
+ 		}
+	   return accountStatusRequest;
+	}//end of getAllAccountStatusRequest
+	
+	public void updateAccountStatus(Account account,String status,String requestStatus) {    ///
+		String query="UPDATE account_info SET STATUS= '"+status+"' WHERE ACCOUNT_NUMBER = "+account.getAccountNumber();
+		changeStatus(query);
+		String query1="UPDATE account_status_request SET REQUEST_STATUS= '"+requestStatus+"' WHERE ACCOUNT_NUMBER = "+account.getAccountNumber();
+		changeStatus(query1);
+	}//end of delete user
+	
+	
 	
 }

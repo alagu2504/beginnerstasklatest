@@ -11,6 +11,7 @@ public class Statement {
 	private Timestamp time;
 	private String transactionType;
 	private int customerId;
+	private String modeOfTransaction;
 	
 	public void setTransactionId(int transactionId) {
 		this.transactionId=transactionId;
@@ -59,5 +60,12 @@ public class Statement {
 	}
 	public int getCustomerId() {
 		return customerId;
+	}
+	
+	public void setModeOfTransaction(String modeOfTransaction) {
+		this.modeOfTransaction=modeOfTransaction;
+	}
+	public String getModeOfTransaction() {
+		return modeOfTransaction;
 	}
 }
