@@ -12,7 +12,7 @@ import bankingapplicationPojos.Account;
 import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
 import bankingapplicationPojos.CustomerStatusRequest;
-import bankingapplicationPojos.Statement;
+import bankingapplicationPojos.Statements;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
 import customexceptionpackage.CustomException;
@@ -150,8 +150,7 @@ public class BankingApplicationTest {
     						+ "    12.All Account Details\n     11.Transaction Statements of All Customer\n     15.Insert New Users\n     "
     						+ "16.Insert Customer Details\n     17.Insert Account Details\n     "
     						+ "18.Verified and Change Account Status\n     19.Verified and Change Customer Status\n"
-    						+ "     20.Check and Verified Transaction Request\n     22.Request to change the customer Status\n"
-    						+ "     23.Request to change the Account Status\n     Enter 100 for Terminate"
+    						+ "     20.Check and Verified Transaction Request\n     Enter 100 for Terminate"
     						+ "\n-----------------------------------------------------------------------");
     			}
     			logger.info("Enter the case Number :");
@@ -242,8 +241,8 @@ public class BankingApplicationTest {
     			}//end of case 6
     			case 7:{
     				if(customerStatus.equalsIgnoreCase("Active")&&accountStatus.equalsIgnoreCase("Active")) {
-    					List<Statement>statementsList=userObject.getTransactionStatements(currentUsersAccountNumber);
-        				for(Statement statements:statementsList) {
+    					List<Statements>statementsList=userObject.getTransactionStatements(currentUsersAccountNumber);
+        				for(Statements statements:statementsList) {
     						logger.info("\n------------------------------------------------------------------"
     		    				    + "\n     Transaction Id :"+statements.getTransactionId()
     		    				    +"\n     Customer Id :"+statements.getCustomerId()
@@ -313,11 +312,11 @@ public class BankingApplicationTest {
     			
     			case 11:{
     				if(role.equalsIgnoreCase("Admin")) {
-    					Map<Long,Map<Integer,Statement>> allStatements=adminObject.getAllStatements();    					
+    					Map<Long,Map<Integer,Statements>> allStatements=adminObject.getAllStatements();    					
     					Iterator <Long> iteratorObject=allStatements.keySet().iterator();
     					while(iteratorObject.hasNext()) {
-    						Map<Integer,Statement> mapOfStatement=allStatements.get(iteratorObject.next());
-    						for(Statement statement:mapOfStatement.values()) {
+    						Map<Integer,Statements> mapOfStatement=allStatements.get(iteratorObject.next());
+    						for(Statements statement:mapOfStatement.values()) {
     							logger.info("\n------------------------------------------------------------------"
         		    				    + "\n     Transaction Id :"+statement.getTransactionId()
         		    				    +"\n     Customer Id :"+statement.getCustomerId()
@@ -515,7 +514,7 @@ public class BankingApplicationTest {
     					 for(CustomerStatusRequest request:customerStatusRequest.values()) {
     						 logger.info("----------------------------------------------------------------"
     						 		+ "\n     Customer Id :"+request.getCustomerId()
-    						 		+"\n     Description :"+request.getdescription()
+    						 		+"\n     Description :"+request.getDescription()
     						 		+"\n     Starus     :"+request.getStatus());
  							logger.info("Enter true for Accepted or false for Rejected  :");
                             boolean requestStatus=sc.nextBoolean();
@@ -580,7 +579,7 @@ public class BankingApplicationTest {
     				break;
     			}//end of case 21
     			case 22:{
-    			if(currentUsersAccountNumber!=0L) {
+    			if(currentUsersAccountNumber!=0L&&customerStatus.equalsIgnoreCase("Active")&&accountStatus.equalsIgnoreCase("Active")) {
     				sc.nextLine();
     				logger.info("Enter your request reasons for change the customer status :");
     				String description=sc.nextLine();
@@ -595,7 +594,7 @@ public class BankingApplicationTest {
     				break;
     			}//end of case 22
     			case 23:{
-    			if(currentUsersAccountNumber!=0L) {
+    			if(currentUsersAccountNumber!=0L&&customerStatus.equalsIgnoreCase("Active")&&accountStatus.equalsIgnoreCase("Active")) {
     				sc.nextLine();
     				logger.info("Enter the resons for change your Account status :");
     				String description=sc.nextLine();

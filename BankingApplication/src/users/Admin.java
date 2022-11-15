@@ -8,7 +8,7 @@ import bankingapplicationPojos.Account;
 import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
 import bankingapplicationPojos.CustomerStatusRequest;
-import bankingapplicationPojos.Statement;
+import bankingapplicationPojos.Statements;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
 import customexceptionpackage.CustomException;
@@ -24,7 +24,7 @@ public class Admin extends Operations {
 	}
 	
 	
-	public Map<Long,Map<Integer,Statement>>getAllStatements(){
+	public Map<Long,Map<Integer,Statements>>getAllStatements(){
 		return storageLayerObject.getAllTransactionStatements();
 	}
 	

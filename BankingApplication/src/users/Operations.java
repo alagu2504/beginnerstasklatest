@@ -13,7 +13,7 @@ import bankingapplicationPojos.Account;
 import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
 import bankingapplicationPojos.CustomerStatusRequest;
-import bankingapplicationPojos.Statement;
+import bankingapplicationPojos.Statements;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
 import customcheck.CustomCheck;
@@ -46,7 +46,7 @@ public class Operations {
         long finalAmount=currentBalance+depositeAmount;
         storageLayerObject.updateBalance(accountNumber, finalAmount);
         
-        Statement statementObject=new Statement();
+        Statements statementObject=new Statements();
         statementObject.setReceiverAccount(accountNumber);
         statementObject.setTransferAmount(depositeAmount);
         statementObject.setTime(System.currentTimeMillis());
@@ -81,7 +81,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) throws Cust
 		Balance=Balance-requestPojoObject.getTransferAmount();
 		storageLayerObject.updateBalance(requestPojoObject.getSenderAccountNumber(), Balance);
 		
-		Statement statementObject=new Statement();
+		Statements statementObject=new Statements();
 		statementObject.setCustomerId(accountPojo.getCustomerId());
 		statementObject.setSenderAccount(requestPojoObject.getSenderAccountNumber());
 		statementObject.setReceiverAccount(requestPojoObject.getReceiverAccountNumber());
@@ -121,7 +121,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) throws Cust
 		Customer senderCustomerObject=allCustomerDetails.get(senderAccount.getCustomerId());
 		Customer receiverCustomerObject=allCustomerDetails.get(receiverAccount.getCustomerId());
 		
-		Statement senderStatementObject=new Statement();
+		Statements senderStatementObject=new Statements();
 		senderStatementObject.setCustomerId(senderCustomerObject.getCustomerId());
 		senderStatementObject.setSenderAccount(senderAccountNumber);
 		senderStatementObject.setReceiverAccount(receiverAccountNumber);
@@ -131,7 +131,7 @@ public void executeTransaction(TransactionRequest requestPojoObject) throws Cust
 		senderStatementObject.setTransactionType("Debit");
 		senderStatementObject.setModeOfTransaction("Transfer");
 		
-		Statement receiverStatementObject=new Statement();
+		Statements receiverStatementObject=new Statements();
 		receiverStatementObject.setCustomerId(receiverCustomerObject.getCustomerId());
 		receiverStatementObject.setSenderAccount(senderAccountNumber);
 		receiverStatementObject.setReceiverAccount(receiverAccountNumber);
@@ -149,15 +149,15 @@ public void executeTransaction(TransactionRequest requestPojoObject) throws Cust
 	
 	
 	public long checkBalance(long accountNumber) {
-		Account accountPojoObject=getAccountDetails(accountNumber);
-		return accountPojoObject.getBalance();
+		Account account=getAccountDetails(accountNumber);
+		return account.getBalance();
 	}
 	
 	
 	public String changePassword(long currentAccount,long accountNumber,String newPassword) throws CustomException {
 		CustomCheck.isNull(newPassword);
 
-		Pattern passwordPattern=Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%&]).{8,32}$");
+		Pattern passwordPattern=Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%&]).{8,15}$");
 		   Matcher matcherObject = passwordPattern.matcher(newPassword);
 		   if(!matcherObject.matches()) {
 			   return "Enter the New Password contains with one lowercase and one uppercase and one special char[*.!@$%&] ";
@@ -220,9 +220,9 @@ public void executeTransaction(TransactionRequest requestPojoObject) throws Cust
 	}
 	
 	
-	public List<Statement> getTransactionStatements(long accountNumber){
+	public List<Statements> getTransactionStatements(long accountNumber){
 
-		List<Statement> statements=storageLayerObject.getStatements(storageLayerObject.getCustomerId(accountNumber), accountNumber);
+		List<Statements> statements=storageLayerObject.getStatements(storageLayerObject.getCustomerId(accountNumber), accountNumber);
 		return statements;
 	}
 	

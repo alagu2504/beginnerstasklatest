@@ -7,7 +7,7 @@ import bankingapplicationPojos.Account;
 import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
 import bankingapplicationPojos.CustomerStatusRequest;
-import bankingapplicationPojos.Statement;
+import bankingapplicationPojos.Statements;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
 import customexceptionpackage.CustomException;
@@ -48,11 +48,11 @@ public interface StorageLayerInterface {
 
 	 void transactionRequest(TransactionRequest request) ;
 	
-	 List<Statement> getStatements(int customerId,long accountNumber);
+	 List<Statements> getStatements(int customerId,long accountNumber);
 
-	 Map<Long,Map<Integer,Statement>> getAllTransactionStatements();
+	 Map<Long,Map<Integer,Statements>> getAllTransactionStatements();
 
-	 void updateTransactionStatement(Statement statementObject) ;
+	 void updateTransactionStatement(Statements statementObject) ;
 	
 	 void updateTransactionRequest(TransactionRequest requestPojoObject,String requestStatus);
 

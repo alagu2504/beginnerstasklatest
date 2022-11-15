@@ -2,7 +2,7 @@ package bankingapplicationPojos;
 
 import java.sql.Timestamp;
 
-public class Statement {
+public class Statements {
 
 	private int transactionId;
 	private long senderAccount;

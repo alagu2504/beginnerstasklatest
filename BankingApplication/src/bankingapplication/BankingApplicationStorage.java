@@ -17,7 +17,7 @@ import bankingapplicationPojos.Account;
 import bankingapplicationPojos.AccountStatusRequest;
 import bankingapplicationPojos.Customer;
 import bankingapplicationPojos.CustomerStatusRequest;
-import bankingapplicationPojos.Statement;
+import bankingapplicationPojos.Statements;
 import bankingapplicationPojos.TransactionRequest;
 import bankingapplicationPojos.User;
 import customexceptionpackage.CustomException;
@@ -213,12 +213,12 @@ return mapOfAllAccount;
 		return mapOfCustomer;
 	}//end of getCustomerDetails
 	 
-	private void statementsOperation(String query,List<Statement> statements) {
+	private void statementsOperation(String query,List<Statements> statements) {
 		
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
            try(ResultSet resultSet=statement.executeQuery()){
         	   while(resultSet.next()) {
-               	Statement transactionStatement=new Statement();
+               	Statements transactionStatement=new Statements();
                	transactionStatement.setTransactionId(resultSet.getInt("TRANSACTION_ID"));
                	transactionStatement.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
                	transactionStatement.setSenderAccount(resultSet.getLong("SENDER_ACCOUNT_NUMBER"));
@@ -238,9 +238,9 @@ return mapOfAllAccount;
 	}
 	
 	
-	public Map<Long,Map<Integer,Statement>> getAllTransactionStatements(){
+	public Map<Long,Map<Integer,Statements>> getAllTransactionStatements(){
 		
-		Map<Long,Map<Integer,Statement>> transactionStatements=new HashMap<>();
+		Map<Long,Map<Integer,Statements>> transactionStatements=new HashMap<>();
 		String query="SELECT ACCOUNT_NUMBER,CUSTOMER_ID FROM account_info";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 			ResultSet resultSet=statement.executeQuery();
@@ -255,12 +255,12 @@ return mapOfAllAccount;
 		return transactionStatements;
 	}//end of getAllTransactionStatements
 
-	public void statementOperation(String query,Map<Integer,Statement> mapOfStatements){
+	public void statementOperation(String query,Map<Integer,Statements> mapOfStatements){
 		
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 	           try(ResultSet resultSet=statement.executeQuery()){
 	        	   while(resultSet.next()) {
-	               	Statement statementObject=new Statement();
+	               	Statements statementObject=new Statements();
 	               	statementObject.setTransactionId(resultSet.getInt("TRANSACTION_ID"));
 	               	statementObject.setCustomerId(resultSet.getInt("CUSTOMER_ID"));
 	               	statementObject.setSenderAccount(resultSet.getLong("SENDER_ACCOUNT_NUMBER"));
@@ -279,8 +279,8 @@ return mapOfAllAccount;
 	}//end of statementOperation
 		
 
-	public Map<Integer,Statement> getAllStatements(int customerId,long accountNumber){
-		Map<Integer,Statement> mapOfStatements=new HashMap<>();
+	public Map<Integer,Statements> getAllStatements(int customerId,long accountNumber){
+		Map<Integer,Statements> mapOfStatements=new HashMap<>();
 		 String query="SELECT * FROM transaction_statements WHERE CUSTOMER_ID = "
 		+customerId+"  AND SENDER_ACCOUNT_NUMBER = "+accountNumber ;
 			statementOperation(query,mapOfStatements);
@@ -291,8 +291,8 @@ return mapOfAllAccount;
             return mapOfStatements;
 	}//end of getStatements
 	
-	public List<Statement> getStatements(int customerId,long accountNumber){
-		List<Statement>TransactionStatements=new ArrayList<>();
+	public List<Statements> getStatements(int customerId,long accountNumber){
+		List<Statements>TransactionStatements=new ArrayList<>();
 		 String query="SELECT * FROM transaction_statements WHERE CUSTOMER_ID = "
 		+customerId+"  AND SENDER_ACCOUNT_NUMBER = "+accountNumber ;
 			statementsOperation(query,TransactionStatements);
@@ -331,9 +331,10 @@ return mapOfAllAccount;
 	}
 	
 	public void updateTransactionRequest(TransactionRequest requestPojoObject,String requestStatus) {
-		String query="UPDATE transaction_request SET REQUEST_STATUS= ?";
+		String query="UPDATE transaction_request SET REQUEST_STATUS= ? WHERE REQUEST_ID = ?";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 			statement.setString(1, requestStatus);
+			statement.setInt(2, requestPojoObject.getRequestId());
 			statement.executeUpdate();
 		}catch (ClassNotFoundException | SQLException e) {
  			e.printStackTrace();
@@ -347,7 +348,7 @@ return mapOfAllAccount;
 	}//end of transactionMethod
 	
 	
-	public void updateTransactionStatement(Statement statementObject) {
+	public void updateTransactionStatement(Statements statementObject) {
 		String query="INSERT INTO transaction_statements(CUSTOMER_ID,SENDER_ACCOUNT_NUMBER,"
 				+ "RECEIVER_ACCOUNT_NUMBER,TRANSFER_AMOUNT,TRANSACTION_TIME,TRANSACTION_TYPE,MODE_OF_TRANSACTION) VALUES(?,?,?,?,?,?,?)";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
@@ -419,11 +420,11 @@ return mapOfAllAccount;
 	
 	public void changeInfo(Customer customer) throws CustomException {
 		if(customer.getUserName()!=null) {
-			String query="UPDATE user_info SET USER_NAME = "+customer.getUserName()+" WHERE USER_ID = "+customer.getCustomerId();
+			String query="UPDATE user_info SET USER_NAME = '"+customer.getUserName()+"' WHERE USER_ID = "+customer.getCustomerId();
 			changeStatus(query);
 		}
 		else if(customer.getDataOfBirth()!=null) {
-			String query="UPDATE user_info SET DATE_OF_BIRTH = "+customer.getDataOfBirth()+" WHERE USER_ID = "+customer.getCustomerId();
+			String query="UPDATE user_info SET DATE_OF_BIRTH = '"+customer.getDataOfBirth()+"' WHERE USER_ID = "+customer.getCustomerId();
 			changeStatus(query);
 		}
 		else if(customer.getMobileNumber()!=0L) {
@@ -431,12 +432,12 @@ return mapOfAllAccount;
 			changeStatus(query);
 		}
 		else if(customer.getAddress()!=null) {
-			String query="UPDATE user_info SET ADDRESS = "+customer.getAddress()+" WHERE USER_ID = "+customer.getCustomerId();
+			String query="UPDATE user_info SET ADDRESS = '"+customer.getAddress()+"' WHERE USER_ID = "+customer.getCustomerId();
 			changeStatus(query);
 
 		}
 		else if(customer.getEmailId()!=null) {
-			String query="UPDATE user_info SET EMAIL_ID = "+customer.getEmailId()+" WHERE USER_ID = "+customer.getCustomerId();
+			String query="UPDATE user_info SET EMAIL_ID = '"+customer.getEmailId()+"' WHERE USER_ID = "+customer.getCustomerId();
 			changeStatus(query);
 		}
 		else if(customer.getPassword()!=null) {
@@ -469,7 +470,7 @@ return mapOfAllAccount;
 		String query="INSERT INTO customer_status_request(CUSTOMER_ID,DESCRIPTION,STATUS)VALUES(?,?,?)";
 		try(Connection connection=getConnection();PreparedStatement statement=connection.prepareStatement(query)){
 			statement.setInt(1, request.getCustomerId());
-			statement.setString(2, request.getdescription());
+			statement.setString(2, request.getDescription());
 			statement.setString(3,request.getStatus());
 			statement.executeUpdate();
 		}
