@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<style>
+.body{
+ background-image: url("burger.jpg");
+ }
+.title {
+	text-align: center;
+	font-size: 3em;
+}
+
+.mainPage {
+	margin-top: auto;
+	margin-left: 30%;
+	height: 60vh;
+	width: 40%;
+	border-radius: 10px;
+	box-shadow: 0px 0px 40px -6px rgba(0, 0, 0, 0.5);
+	border: solid;
+}
+
+.buttonMain {
+	height: 10vh;
+	width: 20%;
+	margin-left: 38%;
+	margin-top: 10%;
+}
+
+.subHeading {
+	text-align: center;
+}
+
+.order {
+	height: 5vh;
+	width: 10%;
+	margin-left: 45%;
+	margin-top: 10%;
+	font-size: 1.5em;
+	border-radius: 10px;
+}
+.menu{
+	margin-left: 38%;
+	width: 30%;
+}
+table,td,tr,th{
+	border-collapse: collapse;
+    border: 2px solid;
+}
+.veg{
+display:none;
+}
+.nonVeg{
+display:none;
+}
+</style>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="burgerScript.js"></script>
+<meta charset="UTF-8">
+<title>Burger Shop</title>
+</head>
+<body>
+	<h2 class="title">Welcome to Burger Paradise</h2>
+
+<div class="menu">
+<table>
+<tr>
+<th>Crust</th>
+<th>Price</th>
+<th>Filling</th>
+<th>Price</th>
+<th>Toppings</th>
+<th>Price</th>
+</tr>
+<tr>
+<td>Hard</td>
+<td>10</td>
+<td>Chicken Tikka</td>
+<td>120</td>
+<td>Cucumber</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Thin</td>
+<td>10</td>
+<td>Panner Tikka</td>
+<td>100</td>
+<td>Tomato,Cabbage</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Soft</td>
+<td>12</td>
+<td>Turkey Meat</td>
+<td>130</td>
+<td>Meat Strip</td>
+<td>45</td>
+</tr>
+</table>
+</div>
+
+	<div class="mainDiv">
+		<button class="order" onclick="orderPage()">Oder</button>
+	</div>
+
+<div  class="veg">
+<h3> Veg Burger</h3>
+<p>Select  Crust </p>
+  <input type="radio" id="Hard" name="Crust" value="Hard">
+  <label>Hard</label>
+  <input type="radio" id="Thin" name="Crust" value="Thin">
+  <label>Thin</label>
+   <input type="radio" id="Soft" name="Crust" value="Soft">
+  <label>Soft</label><br>
+  
+  <p>Select  Filling </p>
+   <input type="radio" id="Thin" name="Filling" value="Paneer Tikka">
+  <label>Paneer Tikka</label><br>
+  
+  <p>Select Toppings</p>
+  <input  type="checkbox" id="Cucumber" name="toppings" value="Cucumber">
+  <label > Cucumber</label>
+  <input  type="checkbox" id="Tomato" name="toppings" value="Tomato">
+  <label > Tomato</label>
+  <input  type="checkbox" id="Cabbage" name="toppings" value="Cabbage">
+  <label > Cabbage</label><br>
+  <button onclick="billTable()">submit</button>  
+</div>
+
+
+<div  class="nonVeg">
+<h3> Non-Veg Burger</h3>
+
+<p>Select  Crust </p>
+  <input type="radio" id="Hard" name="Crust" value="Hard">
+  <label>Hard</label>
+  <input type="radio" id="Thin" name="Crust" value="Thin">
+  <label>Thin</label>
+   <input type="radio" id="Soft" name="Crust" value="Soft">
+  <label>Soft</label><br>
+  
+  <p>Select  Filling </p>
+  <input type="radio" id="Chicken Tikka" name="Filling" value="Chicken Tikka">
+  <label>Chicken Tikka</label>
+   <input type="radio" id="Thin" name="Filling" value="Paneer Tikka">
+  <label>Paneer Tikka</label>
+   <input type="radio" id="Soft" name="Filling" value="Turkey Meat">
+  <label>Turkey Meat</label><br>
+  
+  <p>Select Toppings</p>
+  <input  onclick="limitOfCheckBox()" class="toppings" type="checkbox" id="Cucumber" name="toppings" value="Cucumber">
+  <label > Cucumber</label>
+  <input  onclick="limitOfCheckBox()" class="toppings" type="checkbox" id="Tomato" name="toppings" value="Tomato">
+  <label > Tomato</label>
+  <input  onclick="limitOfCheckBox()" class="toppings" type="checkbox" id="Meat Strip" name="toppings" value="Meat Strip">
+  <label > Meat Strip</label>
+  <input  onclick="limitOfCheckBox()" class="toppings" type="checkbox" id="Cabbage" name="toppings" value="Cabbage">
+  <label > Cabbage</label><br>
+    <button onclick="billTable()">submit</button>  
+</div>
+
+
+<div class="output">
+
+</div>
+</body>
+</html>
