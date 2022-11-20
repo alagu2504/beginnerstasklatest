@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<style>
+
+.calculator{
+ border: 3px solid rgba(0, 0, 0, 0.5);
+  margin : auto;
+  margin-top: 5%;
+  height: 80vh;
+  width: 29%;
+  padding: 10px;
+  box-shadow: 0px 0px 40px -6px rgba(0, 0, 0, 0.5);
+ background-color:rgba(0, 0, 0, 0.7);
+ border-radius:5px;
+}
+
+.display{
+height:20%;
+font-size:25px;
+text-align:right;
+width:98%;
+margin-top:10px;
+border: 2px solid grey;
+box-shadow: 0px 0px 40px -6px rgba(255, 255, 255, 0.3);
+}
+.buttons{
+height: 10vh;
+width: 80%;
+margin-left:10px;
+margin-top:10px;
+font-size:25px;
+}
+
+</style>
+<head>
+<meta charset="UTF-8">
+<title>Calculator</title>
+</head>
+<body>
+<div class="calculator">
+
+<input class="display" id="display"/>
+
+<table style="margin-left:5px;margin-top:10px;width:99%;">
+<tr>
+<td><input class="buttons" type="button" onclick="numbers(7)" value="7"/></td>
+<td><input class="buttons" type="button" onclick="numbers(8)" value="8"/></td>
+<td><input class="buttons" type="button" onclick="numbers(9)" value="9"/></td>
+<td><input class="buttons" id="division" type="button" onclick="operation('/')" value="/"/></td>
+</tr>
+<tr>
+<td><input class="buttons" type="button" onclick="numbers(4)" value="4"/></td>
+<td><input class="buttons" type="button" onclick="numbers(5)" value="5"/></td>
+<td><input class="buttons" type="button" onclick="numbers(6)" value="6"/></td>
+<td><input class="buttons" id="mulitiplication" type="button" onclick="operation('*')" value="*"/></td>
+</tr>
+<tr>
+<td><input class="buttons" type="button" onclick="numbers(1)" value="1"/></td>
+<td><input class="buttons" type="button" onclick="numbers(2)" value="2"/></td>
+<td><input class="buttons" type="button" onclick="numbers(3)" value="3"/></td>
+<td><input class="buttons" id="subtraction" type="button" onclick="operation('-')" value="-"/></td>
+</tr>
+<tr>
+<td><input class="buttons" type="button" onclick="numbers('.')" value="."/></td>
+<td><input class="buttons" type="button" onclick="numbers(0)" value="0"/></td>
+<td><input class="buttons" type="button" onclick="output()" value="="/></td>
+<td><input class="buttons" id="addition" type="button" onclick="operation('+')" value="+"/></td>
+</tr>
+<tr>
+<td><input class="buttons" type="button" onclick="clearValue()" value="X"/></td>
+<td><input class="buttons" type="button" onclick="clean()" value="CE"/></td>
+<td><input class="buttons" type="button" onclick="" value=" "/></td>
+<td><input class="buttons" type="button" onclick=" " value=" "/></td>
+</tr>
+</table>
+</div>
+
+<script>
+var expression="";
+var input1="";
+var input2="";
+var inputSymbol='';
+
+function numbers(num){
+
+	console.log("Length "+expression.length);
+	console.log("Before "+expression.charAt(expression.length-1));
+	if(expression=="-"){
+		expression=expression+num;
+		document.getElementById("display").value=document.getElementById("display").value+num;	
+	}
+	else {
+		if(expression.charAt(expression.length-1)=="."&&(num==".")){
+			document.getElementById("display").value=document.getElementById("display").value;
+		}
+		else{
+			expression=expression+num;
+			var lastValue=document.getElementById("display").value;
+			if(lastValue==='/'||lastValue==='*'||lastValue==='-'||lastValue==='+'){
+				
+				document.getElementById("display").value="";
+			}
+			document.getElementById("display").value=document.getElementById("display").value+num;
+		}
+	}	
+}
+
+function operation(symbol){
+
+	if((expression=="")&&(inputSymbol==""&&symbol=='-')){
+
+		expression=expression+symbol;
+		document.getElementById("display").value=expression;
+
+	}
+	else{
+		if(expression.length>0&&(inputSymbol=="")){
+			
+
+			input1=expression;
+			inputSymbol=symbol;
+			
+
+			expression="";
+			document.getElementById("display").value=symbol;
+			if(symbol == '+')
+			{
+				var color=document.getElementById("addition");
+				color.setAttribute("style","background-color: red");
+			}
+			if(symbol == '-')
+			{
+				var color=document.getElementById("subtraction");
+				color.setAttribute("style","background-color: red");
+			}
+			if(symbol == '*')
+			{
+				var color=document.getElementById("mulitiplication");
+				color.setAttribute("style","background-color: red");
+			}
+			if(symbol == '/')
+			{
+				var color=document.getElementById("division");
+				color.setAttribute("style","background-color: red");
+			}
+		}
+		else {
+			console.log("inside ");
+			if(inputSymbol == '+')
+			{
+				var color=document.getElementById("addition");
+				color.setAttribute("style","background-color: white");
+			}
+			if(inputSymbol == '-')
+			{
+				var color=document.getElementById("subtraction");
+				color.setAttribute("style","background-color: white");
+			}
+			if(inputSymbol == '*')
+			{
+				var color=document.getElementById("mulitiplication");
+				color.setAttribute("style","background-color: white");
+			}
+			if(inputSymbol == '/')
+			{
+				var color=document.getElementById("division");
+				color.setAttribute("style","background-color: white");
+			}
+			if(symbol == '+')
+			{
+				var color=document.getElementById("addition");
+				color.setAttribute("style","background-color: red");
+			}
+			if(symbol == '-')
+			{
+				var color=document.getElementById("subtraction");
+				color.setAttribute("style","background-color: red");
+			}
+			if(symbol == '*')
+			{
+				var color=document.getElementById("mulitiplication");
+				color.setAttribute("style","background-color: red");
+			}
+			if(symbol == '/')
+			{
+				var color=document.getElementById("division");
+				color.setAttribute("style","background-color: red");
+			}
+			inputSymbol=symbol;
+			document.getElementById("display").value=symbol;
+		}
+	}
+
+}
+
+function output(){
+	input2=expression;
+	console.log(input1);
+	console.log(input2);
+	console.log(inputSymbol);
+	if(inputSymbol=='+'){
+		var color=document.getElementById("addition");
+		color.setAttribute("style","background-color: white");
+		document.getElementById("display").value=Number(input1)+Number(input2);
+		expression=Number(input1)+Number(input2);
+		if(expression==0){
+			expression="";
+			input1="";
+			input2="";
+			inputSymbol='';
+			}
+		else if(!expression){
+			document.getElementById("display").value=0;
+		}
+	
+	}
+	else if(inputSymbol=='-'){
+		var color=document.getElementById("subtraction");
+		color.setAttribute("style","background-color: white");
+		document.getElementById("display").value=Number(input1)-Number(input2);
+		expression=Number(input1)-Number(input2);
+		if(expression==0){
+			expression="";
+			input1="";
+			input2="";
+			inputSymbol='';
+		}
+		else if(!expression){
+			document.getElementById("display").value=0;
+		}
+
+
+	}
+	else if(inputSymbol=='*'){
+		var color=document.getElementById("mulitiplication");
+		color.setAttribute("style","background-color: white");
+		document.getElementById("display").value=Number(input1)*Number(input2);
+		expression=Number(input1)*Number(input2);
+		if(expression==0){
+			expression="";
+			input1="";
+			input2="";
+			inputSymbol='';
+			}
+		else if(!expression){
+			document.getElementById("display").value=0;
+		}
+	
+
+	}
+	else if(inputSymbol=='/'){
+		var color=document.getElementById("division");
+		color.setAttribute("style","background-color: white");
+		document.getElementById("display").value=Number(input1)/Number(input2);
+		expression=Number(input1)/Number(input2);
+		if(expression==0){
+			expression="";
+			input1="";
+			input2="";
+			inputSymbol='';		
+			}
+		else if(!expression){
+			document.getElementById("display").value=0;
+		}
+		
+	}
+	
+}
+
+function clearValue(){
+	expression=expression.substring(0,expression.length-1);
+	//var exp=document.getElementById("display").value;
+	document.getElementById("display").value=expression;
+
+}
+
+function clean(){
+	expression="";
+	input1="";
+	input2="";
+	inputSymbol='';
+	document.getElementById("display").value=" ";
+
+}
+
+</script>
+</body>
+</html>

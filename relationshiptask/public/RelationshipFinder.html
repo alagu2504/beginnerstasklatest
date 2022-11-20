@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<div>
+<input id="name" type="text" name="inputName" placeholder="Enter the Name"/>
+<button onclick=findGrandChildren()>Click Here</button>
+</div>
+<p id="grandChild"></p>
+<p id="numberOfGrandChild"></p>
+<script type="text/javascript">
+const object1={parentName:"Ram",childName:"Ravi"};
+const object2={parentName:"Ravi",childName:"Siva"};
+const object3={parentName:"Siva",childName:"Sam"};
+const object4={parentName:"Ravi",childName:"Raghul"};
+const object5={parentName:"Raghul",childName:"Tom"};
+const object6={parentName:"Tom",childName:"Jerry"};
+const object7={parentName:"Ram",childName:"Sita"};
+const object8={parentName:"Sita",childName:"Sethu"};
+var array1=[object1,object2,object3,object4,object5,object6,object7,object8];
+var array2=[];
+var j=0;
+var count=0;
+
+function findGrandChildren(){
+	var input=document.getElementById('name').value;
+	for(let i=0;i<array1.length;i++){
+		if(array1[i].parentName==input){
+			array2[j]=array1[i].childName;
+			j++;
+		}
+	}
+	for(let i=0;i<array2.length;i++){
+		var name=array2[i];
+		for(let j=0;j<array1.length;j++){
+			if(name==array1[j].parentName){
+				count++;
+				document.write(array1[j].childName+"<br> ");
+			}
+		}
+	}
+	document.write("<p>Number of grand childer :</P>"+count);
+}
+</script>
+</body>
+</html>

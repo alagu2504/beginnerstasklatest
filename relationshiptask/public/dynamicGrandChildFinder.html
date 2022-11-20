@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<div class="numberOfPair">
+<label>Enter the Number Of Pairs :</label>
+<input id="noOfPairs" type="number" name="noOfPairs" placeholder="Enter the Number"/>
+<button onclick="createTable()">Go</button>
+</div>
+<div class="inputs"></div>
+<div class="values"></div>
+<div class="output"></div>
+
+<script type="text/javascript">
+
+function createTable(){
+	var size=document.getElementById('noOfPairs').value;
+    var inputDiv=document.getElementsByClassName("inputs");
+	   for (let i = 1; i <= size; i++){
+		   var innerDiv=document.createElement("div");
+	    
+	    var parentInput=document.createElement("input");
+	    parentInput.setAttribute("class","parent");
+	    parentInput.setAttribute("type","text");
+	    parentInput.setAttribute("name","parent");
+	    parentInput.setAttribute("placeholder","Enter Parent Name");
+	    
+	    
+	    var childInput=document.createElement("input");
+	    childInput.setAttribute("class","child");
+	    childInput.setAttribute("type","text");
+	    childInput.setAttribute("name","child");
+	    childInput.setAttribute("placeholder","Enter Child Name");
+
+	    
+	    
+	    innerDiv.append(parentInput);
+	    innerDiv.append(childInput);
+	    inputDiv[0].append(innerDiv);
+	    if(i==size){
+	    	 var submit=document.createElement("button");
+	    	 submit.setAttribute("onclick","getParentName()")
+	      	 submit.innerHTML="submit";
+	      	 inputDiv[0].append(submit);
+	    }
+}	
+}
+
+function getParentName(){
+    const div2=document.getElementsByClassName("values");
+    var parentName=document.createElement("input");
+    parentName.setAttribute("id","searchValue");
+    parentName.setAttribute("type","text");
+    parentName.setAttribute("name","parent");
+    parentName.setAttribute("placeholder","Enter Search Value");
+    
+    var submit=document.createElement("button");
+	 submit.setAttribute("onclick","getGrandChild()")
+ 	 submit.innerHTML="submit";
+	 
+	    div2[0].append(parentName);
+	    div2[0].append(submit);
+
+    }
+    
+    function getGrandChild(){
+        const div3=document.getElementsByClassName("output");
+    	var searchValue=document.getElementById("searchValue").value;
+    	const parentArray=document.getElementsByClassName("parent");
+    	const childArray=document.getElementsByClassName("child");
+    	var j=0;
+    	var childArray2=[];
+    	for(let i=0;i<parentArray.length;i++){
+    		if(searchValue==parentArray[i].value){
+    			childArray2[j]=childArray[i].value;
+    			j++;
+    		}
+    	}
+    	var l=0;
+    	for(let i=0;i<childArray.length;i++){
+    		if(searchValue==childArray[i].value){
+    			l++;
+    		}
+    	}
+    	if(childArray2.length==0&&l==0){
+    		div3[0].append(" You are not a Member of Family");
+    	}
+    	else if(l>0){
+    		div3[0].append(" You don't have a Grand Child");
+    	}
+    	else{
+    		var s=0;
+        	var childArray3=[];
+        	for(let i=0;i<childArray2.length;i++){
+        		for(let z=0;z<parentArray.length;z++){
+        			if(childArray2[i]==parentArray[z].value){
+        				childArray3[s]=childArray[z].value;
+        				s++;
+        			}
+        		}
+        	}
+        	if(childArray3.length==0){
+        		div3[0].append(" Given Input Don't have Grand Child");
+        	}
+        	else{
+     		   var innerDiv=document.createElement("div");
+     		    innerDiv.append("Grand Children :"+childArray3);
+        		div3[0].append(innerDiv);
+            	div3[0].append("Number Of Grand Children :"+childArray3.length);
+        	}
+    	}
+
+  
+    }
+
+</script>
+</body>
+</html>

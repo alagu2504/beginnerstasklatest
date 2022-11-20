@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<div>
+<input id="name" type="text" name="inputName" placeholder="Enter the Name"/>
+<button onclick=findGrandChildren()>Click Here</button>
+</div>
+
+<script type="text/javascript">
+var count=0;
+var names={"Ram":["Ravi","Sita"],
+		   "Ravi":["Siva","Raghul"],
+		   "Siva":["Sam"],
+		   "Raghul":["Tom"],
+		   "Tom":["Jerry"],
+		   "Sita":["Sethu"]};
+		   
+		   
+		   function findGrandChildren(){
+			   var input=document.getElementById('name').value;
+			   var array=names[input];
+        	   document.write("<p>Grand Children</p>");
+	           for(let i=0;i<array.length;i++){
+	        	   var name=array[i];
+	        	   count=count+names[name].length;
+	        	   document.write(names[name]+"<br>");
+	           }
+	           if(count==0){
+	        	   document.write("<p>You don't have a Grand Children</p>");
+	           }
+	           document.write("<p>Number of grand childer :</P>"+count); 
+		   }
+		  	   
+</script>
+</body>
+</html>
