@@ -27,11 +27,11 @@ public class BankingApplicationStorage implements StorageLayerInterface {
 
 	public  Connection getConnection() throws ClassNotFoundException, SQLException {
 		String url="jdbc:mysql://localhost:3306/banking_system";
-		String driver="com.mysql.cj.jdbc.Driver";
+//		String driver="com.mysql.cj.jdbc.Driver";
         String userName="alagu";
         String password="mysql2504.";
        
-			Class.forName(driver);
+//			Class.forName(driver);
 			Connection connection=DriverManager.getConnection(url, userName, password);
 	        return connection;
 			}//end of getConnection
